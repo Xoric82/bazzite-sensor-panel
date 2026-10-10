@@ -1,0 +1,13 @@
+{
+    "KPlugin": {
+        "Id": "primary-screen-at-login",
+        "Name": "Primary screen at login",
+        "Description": "Makes DP-2 the active screen at login and moves windows that open on the sensor panel back to it for the first two minutes.",
+        "Version": "1.0",
+        "License": "MIT",
+        "EnabledByDefault": false
+    },
+    "X-Plasma-API": "javascript",
+    "X-Plasma-MainScript": "code/main.js",
+    "KPackageStructure": "KWin/Script"
+}

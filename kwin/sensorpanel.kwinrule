@@ -1,0 +1,29 @@
+# KWin window rule for the sensor panel window, applied to ~/.config/kwinrulesrc by install.sh.
+# Matches the Chrome app window by class and pins it borderless over the panel output without taking focus.
+# position/size must match where the panel sits in your display layout (System Settings > Display & Monitor).
+Description=Sensor Panel on secondary display
+wmclass=chrome-127.0.0.1__-Default
+wmclassmatch=1
+wmclasscomplete=false
+title=
+titlematch=0
+position=3440,0
+positionrule=2
+size=1280,400
+sizerule=2
+screen=1
+screenrule=2
+fullscreen=false
+fullscreenrule=2
+noborder=true
+noborderrule=2
+acceptfocus=false
+acceptfocusrule=2
+fsplevel=4
+fsplevelrule=2
+skiptaskbar=true
+skiptaskbarrule=2
+skippager=true
+skippagerrule=2
+skipswitcher=true
+skipswitcherrule=2

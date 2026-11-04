@@ -4,6 +4,10 @@
 DIR="$(dirname "$(readlink -f "$0")")"
 PORT="${SENSOR_PANEL_PORT:-8765}"
 PROFILE="$HOME/.var/app/com.google.Chrome/data/sensor-panel"
+# Theme: a stylesheet name from themes/ (cyber, classic). Set it with SENSOR_PANEL_THEME or one word in this file.
+THEME_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/sensor-panel/theme"
+THEME="${SENSOR_PANEL_THEME:-$(tr -d "[:space:]" < "$THEME_FILE" 2>/dev/null)}"
+THEME="${THEME:-cyber}"
 
 if ! curl -s -o /dev/null "http://127.0.0.1:$PORT/api"; then
   nohup python3 "$DIR/server.py" >/dev/null 2>&1 &
@@ -15,7 +19,7 @@ pgrep -f -- "--user-data-dir=$PROFILE" >/dev/null && exit 0
 
 exec flatpak run com.google.Chrome \
   --user-data-dir="$PROFILE" \
-  --app="http://127.0.0.1:$PORT/" \
+  --app="http://127.0.0.1:$PORT/?theme=$THEME" \
   --no-first-run --noerrdialogs --disable-translate --disable-features=Translate \
   --password-store=basic --hide-crash-restore-bubble \
   --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows

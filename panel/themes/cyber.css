@@ -1,0 +1,94 @@
+/* Cyber theme: "Cyberpunk Bazzite" from DESIGN.md (neon purple / dark cyber, monospace, sharp corners, tight glows).
+   Same class names as classic.css; panel.html's markup and script are shared by both. */
+:root {
+  --bg-main: #0b0914; --bg-surface: #131024; --bg-overlay: #1c1833;
+  --neon-purple: #a855f7; --neon-magenta: #ec4899; --neon-cyan: #06b6d4;
+  --text-primary: #f8fafc; --text-secondary: #94a3b8; --text-muted: #475569; --ui-danger: #f43f5e;
+  /* Names the markup and script use: card accents and the temperature/load bar states. */
+  --cpu: var(--neon-purple); --gpu: var(--neon-magenta); --ram: var(--neon-cyan);
+  --ok: var(--neon-cyan); --warm: var(--neon-magenta); --hot: var(--ui-danger);
+}
+* { box-sizing: border-box; margin: 0; }
+/* DESIGN.md's neon glow in the element's own colour (--c). Declared per element so --c resolves where it's used. */
+*, *::before, *::after { --glow: 0 0 10px color-mix(in srgb, var(--c) 40%, transparent), 0 0 2px color-mix(in srgb, var(--c) 20%, transparent); }
+html, body { width: 100%; height: 100%; overflow: hidden; cursor: none; color: var(--text-primary);
+  font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+/* Tactical-dashboard grid behind everything. */
+body { background: var(--bg-main);
+  background-image: linear-gradient(var(--bg-surface) 1px, transparent 1px), linear-gradient(90deg, var(--bg-surface) 1px, transparent 1px);
+  background-size: 8vmin 8vmin; background-position: -1px -1px; }
+main { display: grid; width: 100%; height: 100%; gap: 1.6vmin; padding: 1.6vmin; grid-template-columns: repeat(3, 1fr); }
+@media (orientation: portrait) { main { grid-template-columns: 1fr; grid-template-rows: repeat(3, 1fr); } }
+
+.card { --c: var(--accent); position: relative; background: var(--bg-surface); border: 1px solid var(--bg-overlay);
+  border-radius: 2px; padding: 3.6vmin 4.4vmin; display: flex; flex-direction: column; justify-content: space-between;
+  min-width: 0; min-height: 0; }
+/* Accent bar along the top edge, plus a corner bracket bottom-right. */
+.card::before { content: ""; position: absolute; left: -1px; right: -1px; top: -1px; height: .6vmin;
+  background: var(--accent); box-shadow: var(--glow); }
+.card::after { content: ""; position: absolute; right: 1.2vmin; bottom: 1.2vmin; width: 2.4vmin; height: 2.4vmin;
+  border-right: 2px solid var(--accent); border-bottom: 2px solid var(--accent); opacity: .7; }
+.title { font-size: 6vmin; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
+.title::before { content: "[ "; color: var(--text-muted); }
+.title::after { content: " ]"; color: var(--text-muted); }
+.metric { display: flex; flex-direction: column; gap: 1.4vmin; }
+.row { display: flex; justify-content: space-between; align-items: baseline; gap: 2vmin; }
+.label { font-size: 3.6vmin; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .25em; }
+.label::before { content: "// "; color: var(--accent); }
+.value { font-size: 12vmin; font-weight: 700; line-height: 1; white-space: nowrap; letter-spacing: -.02em; }
+.unit { font-size: 4.6vmin; color: var(--text-secondary); font-weight: 500; margin-left: 1vmin; letter-spacing: .1em; }
+.sub { font-size: 3.4vmin; color: var(--text-secondary); white-space: nowrap; letter-spacing: .05em; }
+/* Segmented diagnostic bar: the ticks are drawn over the track and the fill. */
+.bar { position: relative; height: 2.2vmin; background: var(--bg-overlay); border-radius: 0; }
+.bar::after { content: ""; position: absolute; inset: 0;
+  background: repeating-linear-gradient(90deg, transparent 0 1.6vmin, var(--bg-surface) 1.6vmin 2vmin); }
+.fill { --c: var(--fill, var(--accent)); height: 100%; width: 0; background: var(--accent); box-shadow: var(--glow);
+  transition: width .15s ease-out, background-color .15s ease-out; }
+
+/* ---- Now playing ---- */
+.sensors { display: contents; }
+.music { --c: var(--neon-purple); display: none; position: relative; overflow: hidden; background: var(--bg-surface);
+  border: 1px solid var(--bg-overlay); border-radius: 2px; min-width: 0; min-height: 0; }
+.music::before { content: ""; position: absolute; z-index: 1; left: -1px; top: -1px; bottom: -1px; width: .6vmin;
+  background: var(--neon-purple); box-shadow: var(--glow); }
+.music .bg { position: absolute; inset: -10%; background-size: cover; background-position: center;
+  filter: blur(6vmin) saturate(1.2) brightness(.3); transform: scale(1.1); }
+.music .inner { position: relative; height: 100%; display: flex; align-items: center; gap: 4.4vmin; padding: 4vmin 4vmin 4vmin 5vmin; }
+.music .art { --c: var(--neon-purple); height: 100%; aspect-ratio: 1; flex: none; border-radius: 2px; object-fit: cover;
+  border: 1px solid var(--neon-purple); box-shadow: var(--glow); background: var(--bg-overlay) center/40% no-repeat; }
+.music .art.empty { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8'%3E%3Cpath d='M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z'/%3E%3C/svg%3E"); }
+.music .meta { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 1.8vmin; }
+.music .np { --c: var(--neon-cyan); font-size: 3.2vmin; letter-spacing: .25em; color: var(--neon-cyan); text-transform: uppercase;
+  display: flex; align-items: center; gap: 1.6vmin; }
+.music .np::before { content: ""; width: 1.6vmin; height: 1.6vmin; flex: none; background: var(--neon-cyan); box-shadow: var(--glow); }
+.music .song { font-size: 8vmin; font-weight: 700; line-height: 1.1; letter-spacing: -.01em; display: -webkit-box; -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+.music .artist { font-size: 5.4vmin; font-weight: 600; color: var(--neon-magenta); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.music .album { font-size: 3.8vmin; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.music .album::before { content: "$ "; color: var(--text-muted); }
+.music .progress { margin-top: 2vmin; display: flex; align-items: center; gap: 2vmin; font-size: 3.4vmin; color: var(--text-secondary); }
+.music .progress .bar { flex: 1; height: 1.2vmin; }
+.music .progress .bar::after { display: none; }
+.music .progress .fill { --c: var(--neon-purple); background: var(--neon-purple); transition: width 1s linear; }
+
+body.playing main { grid-template-columns: 2fr 1fr; }
+body.playing .music { display: block; animation: fade .15s ease-out; }
+body.playing .sensors { display: grid; grid-template-rows: repeat(3, 1fr); gap: 1.6vmin; min-height: 0; }
+body.playing .card { padding: 2vmin 3vmin 2vmin 3.6vmin; display: grid; grid-template-columns: auto 1fr 1fr; align-items: center; gap: 3vmin; }
+body.playing .card::before { right: auto; bottom: -1px; width: .6vmin; height: auto; }
+body.playing .card::after { width: 1.6vmin; height: 1.6vmin; right: .8vmin; bottom: .8vmin; }
+body.playing .title { font-size: 3.6vmin; writing-mode: vertical-rl; transform: rotate(180deg); letter-spacing: .2em; }
+body.playing .title::before, body.playing .title::after { content: none; }
+body.playing .metric { gap: 1vmin; }
+body.playing .label { font-size: 2.6vmin; letter-spacing: .2em; }
+body.playing .sub { display: none; }
+body.playing .value { font-size: 7.4vmin; }
+body.playing .unit { font-size: 3.2vmin; margin-left: .6vmin; }
+body.playing .bar { height: 1.2vmin; }
+body.playing .bar::after { background: repeating-linear-gradient(90deg, transparent 0 1vmin, var(--bg-surface) 1vmin 1.3vmin); }
+@media (orientation: portrait) {
+  body.playing main { grid-template-columns: 1fr; grid-template-rows: 1.3fr 1fr; }
+  body.playing .music .inner { flex-direction: column; justify-content: center; text-align: center; padding: 4vmin; }
+  body.playing .music .art { height: auto; width: 70%; }
+}
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }

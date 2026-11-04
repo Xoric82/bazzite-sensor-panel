@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Tiny sensor server: serves panel.html and a JSON endpoint read from sysfs/procfs."""
-import glob, json, os, signal, subprocess, threading, time, urllib.parse
+"""Tiny sensor server: serves panel.html, its theme stylesheets and a JSON endpoint read from sysfs/procfs."""
+import glob, json, os, re, signal, subprocess, threading, time, urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -243,9 +243,16 @@ class Handler(BaseHTTPRequestHandler):
             ctype = ("image/png" if body[:4] == b"\x89PNG" else
                      "image/webp" if body[:4] == b"RIFF" and body[8:12] == b"WEBP" else
                      "image/gif" if body[:3] == b"GIF" else "image/jpeg")
-        elif self.path in ("/", "/index.html"):
+        elif urllib.parse.urlsplit(self.path).path in ("/", "/index.html"):
             with open(os.path.join(HERE, "panel.html"), "rb") as f:
                 body, ctype = f.read(), "text/html; charset=utf-8"
+        elif m := re.fullmatch(r"/themes/([a-z0-9-]+)\.css", urllib.parse.urlsplit(self.path).path):
+            path = os.path.join(HERE, "themes", m[1] + ".css")
+            if not os.path.isfile(path):
+                self.send_error(404)
+                return
+            with open(path, "rb") as f:
+                body, ctype = f.read(), "text/css; charset=utf-8"
         else:
             self.send_error(404)
             return

@@ -17,6 +17,7 @@ The layout adapts to landscape or portrait. When music plays, the sensors shrink
 |---|---|---|
 | Sensor + MPRIS server (Python stdlib only, `127.0.0.1:8765`) | `panel/server.py` | `~/.local/share/sensor-panel/` |
 | Panel page (polls `/api` every second) | `panel/panel.html` | `~/.local/share/sensor-panel/` |
+| Theme stylesheets (`cyber`, `classic`) | `panel/themes/` | `~/.local/share/sensor-panel/themes/` |
 | Launcher (starts server, opens a dedicated Chrome app window) | `panel/launch.sh` | `~/.local/share/sensor-panel/` |
 | KWin window rule (pins the window over the panel, never takes focus) | `kwin/sensorpanel.kwinrule` | `~/.config/kwinrulesrc` |
 | KWin script: make the main monitor active at login and move stray windows off the panel for 2 min | `kwin/primary-screen-at-login/` | `~/.local/share/kwin/scripts/` |
@@ -44,6 +45,22 @@ Notes:
 ./install.sh
 ~/.local/share/sensor-panel/launch.sh
 ```
+
+## Themes
+
+The panel ships with two looks, which share the same markup and script:
+
+- **`cyber`** (default): the "Cyberpunk Bazzite" design in [DESIGN.md](DESIGN.md).
+- **`classic`**: the original blue/red/purple cards. `panel/themes/classic.css` is the original stylesheet, unchanged.
+
+To switch, write the theme name to `~/.config/sensor-panel/theme`, close the panel window, and start it again:
+
+```bash
+mkdir -p ~/.config/sensor-panel && echo classic > ~/.config/sensor-panel/theme
+~/.local/share/sensor-panel/launch.sh
+```
+
+Delete that file (or write `cyber`) to go back to the default. `SENSOR_PANEL_THEME=classic` works too for a one-off launch. The git tag `classic-design` marks the last commit before themes existed.
 
 ## Adapting to your setup
 

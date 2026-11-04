@@ -1,12 +1,14 @@
 # KWin window rule for the sensor panel window, applied to ~/.config/kwinrulesrc by install.sh.
-# Matches the Chrome app window by class and pins it borderless over the panel output without taking focus.
+# Matches the Chrome app window by its exact title (the <title> in panel.html) and pins it borderless over the
+# panel output without taking focus. Flatpak Chrome now gives every window the class com.google.Chrome, so the
+# title is what tells the panel apart from normal browser windows (those always end in "- Google Chrome").
 # position/size must match where the panel sits in your display layout (System Settings > Display & Monitor).
 Description=Sensor Panel on secondary display
-wmclass=chrome-127.0.0.1__-Default
+wmclass=com.google.Chrome
 wmclassmatch=1
 wmclasscomplete=false
-title=
-titlematch=0
+title=SensorPanel
+titlematch=1
 position=3440,0
 positionrule=2
 size=1280,400
@@ -15,8 +17,10 @@ screen=1
 screenrule=2
 fullscreen=false
 fullscreenrule=2
-noborder=true
-noborderrule=2
+decorationpolicy=none
+decorationpolicyrule=2
+minimize=false
+minimizerule=2
 acceptfocus=false
 acceptfocusrule=2
 fsplevel=4

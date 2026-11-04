@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Starts the sensor server (if needed) and opens the panel in a dedicated Chrome app window.
-# A KWin rule (class chrome-127.0.0.1__-Default) pins it borderless over HDMI-A-1 at 3440,0 1280x400.
+# A KWin rule (class com.google.Chrome, title SensorPanel) pins it borderless over HDMI-A-1 at 3440,0 1280x400.
 DIR="$(dirname "$(readlink -f "$0")")"
 PORT="${SENSOR_PANEL_PORT:-8765}"
 PROFILE="$HOME/.var/app/com.google.Chrome/data/sensor-panel"

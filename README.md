@@ -27,6 +27,7 @@ The layout adapts to landscape or portrait. When music plays, the sensors shrink
 Notes:
 
 - **Album art from Flatpak browsers:** these report art as `file:///tmp/...` inside their sandbox. The server resolves it via `/run/user/<uid>/.flatpak/<app>/tmp/`.
+- **Window matching:** Flatpak Chrome gives every window the class `com.google.Chrome`, so the KWin rule and script recognise the panel by its title `SensorPanel` (the `<title>` in `panel.html`). Keep the two in sync.
 - **Watchdog:** if the panel page stops polling for 60 s (e.g. Chrome's renderer died) while the panel window is still open, the server restarts it.
 - **Health check:** `curl -s http://127.0.0.1:8765/health` reports how long ago the panel last polled.
 - **Game Mode:** gamescope only drives one output, so the panel is blank there. It works in Desktop Mode.

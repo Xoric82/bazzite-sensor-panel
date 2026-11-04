@@ -2,7 +2,10 @@
 // GRACE_MS move any normal window that opens on another screen (e.g. the HDMI sensor panel) over to PRIMARY.
 const PRIMARY = "DP-2";
 const GRACE_MS = 120000;
-const IGNORE_CLASSES = ["chrome-127.0.0.1__-Default"];  // the sensor panel itself
+// The sensor panel itself. Flatpak Chrome now uses the class com.google.Chrome for every window (it used to be
+// chrome-127.0.0.1__-Default), so recognise the panel by its title, or by its URL before the page has set it.
+const isPanel = w => w.resourceClass === "chrome-127.0.0.1__-Default" ||
+    (w.resourceClass === "com.google.Chrome" && /^(SensorPanel$|127\.0\.0\.1:8765)/.test(String(w.caption)));
 const started = Date.now();
 
 const inGrace = () => Date.now() - started < GRACE_MS;
@@ -16,7 +19,7 @@ function focusPrimary() {
 
 function rescue(w) {
     const p = primary();
-    if (!inGrace() || !p || !w || !w.normalWindow || IGNORE_CLASSES.includes(String(w.resourceClass))) return;
+    if (!inGrace() || !p || !w || !w.normalWindow || isPanel(w)) return;
     if (w.output && w.output.name !== PRIMARY) {
         workspace.sendClientToScreen(w, p);
         if (!w.fullScreen) {
@@ -29,6 +32,21 @@ function rescue(w) {
     focusPrimary();
 }
 
+// Chrome only sets the "SensorPanel" title after KWin has already placed the window, so the rule's border/focus
+// settings get applied but its position does not. Ask KWin to re-apply rules once the title is there.
+function watchPanelTitle(w) {
+    if (!w || w.resourceClass !== "com.google.Chrome") return;
+    const onCaption = () => {
+        if (w.caption !== "SensorPanel") return false;
+        w.captionChanged.disconnect(onCaption);
+        callDBus("org.kde.KWin", "/KWin", "org.kde.KWin", "reconfigure");
+        return true;
+    };
+    w.captionChanged.connect(onCaption);
+    onCaption();
+}
+
 focusPrimary();
 workspace.screensChanged.connect(() => { if (inGrace()) focusPrimary(); });
 workspace.windowAdded.connect(rescue);
+workspace.windowAdded.connect(watchPanelTitle);

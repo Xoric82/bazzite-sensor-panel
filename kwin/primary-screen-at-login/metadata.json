@@ -2,7 +2,7 @@
     "KPlugin": {
         "Id": "primary-screen-at-login",
         "Name": "Primary screen at login",
-        "Description": "Makes DP-2 the active screen at login and moves windows that open on the sensor panel back to it for the first two minutes.",
+        "Description": "Makes DP-2 the active screen at login, moves windows that open on the sensor panel back to it for the first two minutes, and re-applies the sensor panel window rule once its title is set.",
         "Version": "1.0",
         "License": "MIT",
         "EnabledByDefault": false

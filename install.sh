@@ -11,6 +11,8 @@ install -m755 "$SRC/panel/server.py" "$SRC/panel/launch.sh" "$APP/"
 install -m644 "$SRC/panel/panel.html" "$APP/"
 mkdir -p "$APP/themes"
 install -m644 "$SRC"/panel/themes/*.css "$APP/themes/"
+mkdir -p "$APP/themes/fonts"
+install -m644 "$SRC"/panel/themes/fonts/* "$APP/themes/fonts/"
 
 echo "Adding app menu + autostart entries"
 mkdir -p "$HOME/.local/share/applications" "$HOME/.config/autostart"

@@ -253,6 +253,14 @@ class Handler(BaseHTTPRequestHandler):
                 return
             with open(path, "rb") as f:
                 body, ctype = f.read(), "text/css; charset=utf-8"
+        elif m := re.fullmatch(r"/themes/fonts/([A-Za-z0-9-]+)\.woff2", urllib.parse.urlsplit(self.path).path):
+            # Fonts bundled with the themes: the panel can't rely on a CDN at startup.
+            path = os.path.join(HERE, "themes", "fonts", m[1] + ".woff2")
+            if not os.path.isfile(path):
+                self.send_error(404)
+                return
+            with open(path, "rb") as f:
+                body, ctype = f.read(), "font/woff2"
         else:
             self.send_error(404)
             return

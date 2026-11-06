@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <title>SensorPanel</title>
 <script>
-  // Theme stylesheet from panel/themes/, picked by ?theme= (launch.sh passes it; default cyber).
+  // Theme stylesheet from panel/themes/, picked by ?theme= (launch.sh passes it; default synthwave).
   // An unknown theme falls back to classic. Written synchronously so the page never renders unstyled.
-  const requested = new URLSearchParams(location.search).get("theme") || "cyber";
+  const requested = new URLSearchParams(location.search).get("theme") || "synthwave";
   const theme = /^[a-z0-9-]+$/.test(requested) ? requested : "classic";
   document.write(`<link rel="stylesheet" href="/themes/${theme}.css" onerror="this.onerror=null;this.href='/themes/classic.css'">`);
 </script>

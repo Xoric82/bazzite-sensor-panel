@@ -4,10 +4,10 @@
 DIR="$(dirname "$(readlink -f "$0")")"
 PORT="${SENSOR_PANEL_PORT:-8765}"
 PROFILE="$HOME/.var/app/com.google.Chrome/data/sensor-panel"
-# Theme: a stylesheet name from themes/ (cyber, classic). Set it with SENSOR_PANEL_THEME or one word in this file.
+# Theme: a stylesheet name from themes/ (synthwave, cyber, classic). Set it with SENSOR_PANEL_THEME or one word in this file.
 THEME_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/sensor-panel/theme"
 THEME="${SENSOR_PANEL_THEME:-$(tr -d "[:space:]" < "$THEME_FILE" 2>/dev/null)}"
-THEME="${THEME:-cyber}"
+THEME="${THEME:-synthwave}"
 
 if ! curl -s -o /dev/null "http://127.0.0.1:$PORT/api"; then
   nohup python3 "$DIR/server.py" >/dev/null 2>&1 &
